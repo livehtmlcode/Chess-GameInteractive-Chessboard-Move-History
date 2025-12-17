@@ -1,0 +1,329 @@
+<!--
+MIT License
+
+Copyright (c) 2025 Okan Kaplan (LIVEHTML.net)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Game UI Max</title>
+
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e3f2fd, #eceff1);
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: #0d47a1;
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+header a {
+    color: #bbdefb;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+/* Main */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    background: #1976d2;
+    color: #fff;
+}
+
+button:hover {
+    background: #42a5f5;
+}
+
+.game-area {
+    display: flex;
+    gap: 20px;
+}
+
+#board {
+    flex: 1;
+}
+
+.moves-panel {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.moves-panel h3 {
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+#moves {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.move-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    padding: 6px 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.move-number {
+    text-align: right;
+    padding-right: 6px;
+    font-weight: bold;
+    color: #555;
+}
+
+.move {
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+.move.active {
+    background: #ffeaa7;
+    font-weight: bold;
+}
+
+/* Footer */
+footer {
+    background: #263238;
+    color: #cfd8dc;
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+}
+
+footer a {
+    color: #90caf9;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .game-area {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Chess Game Simulation Player</h1>
+    <a href="https://livehtml.net" target="_blank">LIVEHTML.net | okan kaplan</a>
+</header>
+
+<main>
+<div class="container">
+    <div class="controls">
+        <button id="startButton">Reset</button>
+        <button id="playButton">Play</button>
+    </div>
+
+    <div class="game-area">
+        <div id="board"></div>
+
+        <div class="moves-panel">
+            <h3>Moves</h3>
+            <div id="moves"></div>
+        </div>
+    </div>
+</div>
+</main>
+
+<footer>
+    © 2025 <a href="https://livehtml.net" target="_blank">LIVEHTML.net</a> — MIT Licensed
+</footer>
+
+<div id="movesLog" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+
+<script>
+const board = Chessboard('board', {
+    draggable: true,
+    position: 'start',
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/alpha/{piece}.png',
+    onDragStart,
+    onDrop
+});
+
+const game = new Chess();
+let playInterval = null;
+
+function onDragStart(source, piece) {
+    if (
+        game.game_over() ||
+        (game.turn() === 'w' && piece.startsWith('b')) ||
+        (game.turn() === 'b' && piece.startsWith('w'))
+    ) return false;
+}
+
+function onDrop(source, target) {
+    const move = game.move({ from: source, to: target, promotion: 'q' });
+    if (!move) return 'snapback';
+    board.position(game.fen());
+    logMove(move);
+    renderMoves();
+}
+
+function logMove(move) {
+    movesLog.textContent += JSON.stringify({
+        from: move.from,
+        to: move.to,
+        promotion: move.promotion || null
+    }) + '\n';
+}
+
+function renderMoves() {
+    const history = game.history();
+    const movesDiv = document.getElementById('moves');
+    movesDiv.innerHTML = '';
+
+    for (let i = 0; i < history.length; i += 2) {
+        const row = document.createElement('div');
+        row.className = 'move-row';
+
+        const num = document.createElement('div');
+        num.className = 'move-number';
+        num.textContent = `${Math.floor(i / 2) + 1}.`;
+
+        const white = document.createElement('div');
+        white.className = 'move';
+        white.textContent = history[i] || '';
+
+        const black = document.createElement('div');
+        black.className = 'move';
+        black.textContent = history[i + 1] || '';
+
+        if (i === history.length - 1) white.classList.add('active');
+        if (i + 1 === history.length - 1) black.classList.add('active');
+
+        row.append(num, white, black);
+        movesDiv.appendChild(row);
+    }
+
+    movesDiv.lastChild?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function playMoves() {
+    const lines = movesLog.textContent.trim().split('\n');
+    if (!lines[0]) return;
+
+    game.reset();
+    board.start();
+    document.getElementById('moves').innerHTML = '';
+    let i = 0;
+
+    playInterval = setInterval(() => {
+        if (i < lines.length) {
+            const m = JSON.parse(lines[i]);
+            game.move(m);
+            board.position(game.fen());
+            renderMoves();
+            i++;
+        } else {
+            clearInterval(playInterval);
+        }
+    }, 900);
+}
+
+startButton.onclick = () => {
+    clearInterval(playInterval);
+    game.reset();
+    board.start();
+    movesLog.textContent = '';
+    document.getElementById('moves').innerHTML = '';
+};
+
+playButton.onclick = () => {
+    playInterval ? clearInterval(playInterval) : playMoves();
+};
+</script>
+
+</body>
+</html>
