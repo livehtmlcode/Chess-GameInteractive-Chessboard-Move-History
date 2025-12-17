@@ -1,23 +1,57 @@
-# Chess-GameInteractive-Chessboard-Move-History
-Chess Game UI Max is a clean and professional interactive chess game built with pure HTML, CSS, and Vanilla JavaScript.
-MIT License
+# ♟️ Chess Game UI Max  
+### Interactive Chessboard with Move History (Vanilla JavaScript)
 
-Copyright (c) 2025 Okan Kaplan (LIVEHTML.net)
+![Chess Game UI Preview](assets/preview.png)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+**Chess Game UI Max** is a clean and professional **interactive chess game** built with  
+**pure HTML, CSS, and Vanilla JavaScript** — no frameworks, no build tools.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+It features a responsive chessboard, structured move history with **separate white and black moves**, active move highlighting, and replay functionality, wrapped in a modern UI with header and footer branding.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+🔗 **Live Demo:** https://livehtml.net
+
+---
+
+## ✨ Features
+
+- Interactive chessboard (drag & drop)
+- White / Black move separation
+- Active move highlight
+- Move history replay
+- Responsive layout (desktop & mobile)
+- Clean and extendable codebase
+- No frameworks (Vanilla JS only)
+
+---
+
+## 🛠️ Tech Stack
+
+- HTML5  
+- CSS3 (Flexbox, Responsive UI)  
+- Vanilla JavaScript  
+- chess.js  
+- chessboard.js  
+
+---
+
+## 🎯 Use Cases
+
+- Frontend practice & demos  
+- UI / UX showcase projects  
+- Educational JavaScript examples  
+- Open-source learning  
+- Portfolio projects  
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👤 Author
+
+**Okan Kaplan**  
+🌐 https://livehtml.net
